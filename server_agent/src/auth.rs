@@ -24,23 +24,17 @@ pub struct AuthRequest {
 pub async fn get_auth(body: Json<AuthRequest>) -> Json<String> {
     let payload = &body.payload;
     let mac = &body.mac;
+    let mac_lower = &mac.to_lowercase();
     
     let mut hasher = Sha256::new();
-    hasher.update(payload);
-    let result = hasher.finalize();
+    hasher.input(payload);
+    let hash = hasher.result();
+    let hash_str = format!("{:x}", hash); // convert to hex string
     
-    /*
-    let result_str= match str::from_utf8(&result) {
-        Ok(v) => v,
-        Err(e) => panic!("Invalid Utf-8 sequence: {}", e),
-    };
-    */
+    println!("{:?}", &mac_lower);
+    println!("{:?}", &hash_str);
 
-    println!("{:?}", &mac);
-    // println!("{:?}", &mac.as_bytes()[..]);
-    // println!("{:?}", &result_str);
-
-    if result[..] == mac.as_bytes()[..] {
+    if hash_str[..] == mac_lower[..] {
         return Json("Authorized".to_string());
     }
     return Json("Not Authorized".to_string());
