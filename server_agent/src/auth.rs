@@ -35,7 +35,15 @@ pub async fn get_auth(body: Json<AuthRequest>) -> Json<String> {
     println!("{:?}", &hash_str);
 
     if hash_str[..] == mac_lower[..] {
-        return Json("Authorized".to_string());
+        return heartbeat();
     }
     return Json("Not Authorized".to_string());
+}
+
+// ---Heartbeat function---
+// get list of servers from server state
+// determine if the endpoints on those servers are alive
+// return output as Json Response 
+fn heartbeat() -> Json<String> {
+    return Json("TODO: Not yet Implemented".to_string());
 }
